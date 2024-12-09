@@ -1,0 +1,95 @@
+/* 整体布局 */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+
+/* 标题样式 */
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+
+/* 表格样式 */
+
+.input-section {
+    margin-bottom: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f5f5f5;
+}
+
+
+/* 输入框样式 */
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+
+/* 按钮样式 */
+
+button {
+    padding: 8px 16px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.delete-row {
+    background-color: #f44336;
+}
+
+.delete-row:hover {
+    background-color: #da190b;
+}
+
+
+/* 图表区域样式 */
+
+.chart-section {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#chartContainer {
+    width: 100%;
+    min-height: 400px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}

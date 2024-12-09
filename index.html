@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南丁格尔玫瑰图生成器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>南丁格尔玫瑰图生成器</h1>
+
+        <!-- 标题输入区域 -->
+        <div class="title-section">
+            <input type="text" id="chartTitle" placeholder="输入图表标题" value="南丁格尔玫瑰图">
+        </div>
+
+        <!-- 颜色选择区域 -->
+        <div class="color-section">
+            <label for="chartColor">图表颜色：</label>
+            <input type="color" id="chartColor" value="#4CAF50">
+            <input type="text" id="colorHex" value="#4CAF50" placeholder="#000000">
+        </div>
+
+        <!-- 数据输入区域 -->
+        <div class="input-section">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>标签</th>
+                        <th>数值</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" class="label-input" placeholder="输入标签"></td>
+                        <td><input type="number" class="value-input" placeholder="输入数值"></td>
+                        <td><button class="delete-row">删除</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="addRow">添加行</button>
+            <button id="generateChart">生成图表</button>
+        </div>
+
+        <!-- 图表显示区域 -->
+        <div class="chart-section">
+            <div id="chartContainer"></div>
+            <button id="downloadSVG" disabled>下载 SVG</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
