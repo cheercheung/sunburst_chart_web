@@ -10,7 +10,7 @@ def start_app():
     
     # 启动 Flask 服务器
     print("启动服务器...")
-    flask_process = subprocess.Popen([python_cmd, 'app.py'])
+    flask_process = subprocess.Popen([python_cmd, 'app.py'], cwd=os.path.dirname(__file__))
     
     # 等待服务器启动
     time.sleep(2)
