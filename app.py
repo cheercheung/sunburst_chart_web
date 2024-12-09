@@ -1,90 +1,92 @@
-from flask import Flask, request, jsonify, send_file, render_template
+from flask import Flask, request, jsonify, send_file
 import io
 import os
 import sys
 import matplotlib
-matplotlib.use('Agg')  # 设置后端为 Agg
+from flask_cors import CORS  # 跨域支持
+from rose_chart import generate_rose_chart  # 自定义的南丁格尔玫瑰图生成函数
 
-# 直接导入 rose_chart
-from rose_chart import generate_rose_chart
+matplotlib.use('Agg')  # 使用非交互式后端
 
 # 获取当前文件的绝对路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-print(f"Current directory: {current_dir}")
-
 # 创建 Flask 应用，使用当前目录作为静态文件目录
 app = Flask(__name__, static_url_path='')
+CORS(app)  # 启用 CORS 支持
 
 @app.route('/')
 def index():
+    """提供 index.html 主页面"""
     try:
-        print("Attempting to serve index.html")
-        # 使用你的 index.html
         return send_file('index.html')
     except Exception as e:
-        print(f"Error serving index.html: {str(e)}")
+        app.logger.error(f"Error serving index.html: {str(e)}")
         return f"Error: {str(e)}", 500
 
 @app.route('/styles.css')
 def styles():
-    return send_file('styles.css')
+    """提供样式文件"""
+    try:
+        return send_file('styles.css')
+    except Exception as e:
+        app.logger.error(f"Error serving styles.css: {str(e)}")
+        return f"Error: {str(e)}", 500
 
 @app.route('/script.js')
 def script():
-    return send_file('script.js')
+    """提供 JavaScript 文件"""
+    try:
+        return send_file('script.js')
+    except Exception as e:
+        app.logger.error(f"Error serving script.js: {str(e)}")
+        return f"Error: {str(e)}", 500
 
 @app.route('/generate_chart', methods=['POST'])
 def generate_chart():
+    """处理图表生成请求"""
     try:
-        print("Received chart generation request")
         data = request.get_json()
         if not data:
-            print("No data received")
+            app.logger.error("No data received")
             return "No data received", 400
-            
-        print(f"Data received: {data}")
+
+        # 提取数据
         labels = data.get('labels', [])
         values = data.get('values', [])
         title = data.get('title', '南丁格尔玫瑰图')
         color = data.get('color', '#4CAF50')
-        
+
         if not labels or not values:
-            print("Missing labels or values")
+            app.logger.error("Missing labels or values")
             return "Missing labels or values", 400
-            
-        # 确保 values 是数值列表
+
+        # 确保 values 是浮点数列表
         try:
             values = [float(v) for v in values]
         except (ValueError, TypeError) as e:
-            print(f"Error converting values to float: {str(e)}")
+            app.logger.error(f"Error converting values to float: {str(e)}")
             return "Invalid numeric values", 400
-            
-        print(f"Generating chart with labels: {labels} and values: {values}")
-        
+
+        app.logger.info(f"Generating chart with labels: {labels}, values: {values}")
+
+        # 调用生成图表的函数
         try:
             svg_content = generate_rose_chart(labels, values, title, color)
             if not svg_content:
-                print("generate_rose_chart returned None")
+                app.logger.error("generate_rose_chart returned None")
                 return "Failed to generate chart", 500
         except Exception as e:
-            import traceback
-            print("Error in generate_rose_chart:")
-            print(traceback.format_exc())
+            app.logger.error(f"Error in generate_rose_chart: {str(e)}", exc_info=True)
             return f"Error in chart generation: {str(e)}", 500
-            
-        print("Chart generated successfully")
-        print(f"SVG content length: {len(svg_content)}")
-        
+
+        app.logger.info("Chart generated successfully")
         return svg_content, 200, {'Content-Type': 'image/svg+xml'}
-        
+
     except Exception as e:
-        import traceback
-        print(f"Error in generate_chart endpoint: {str(e)}", file=sys.stderr)
-        print("Full traceback:", file=sys.stderr)
-        print(traceback.format_exc(), file=sys.stderr)
+        app.logger.error(f"Error in generate_chart endpoint: {str(e)}", exc_info=True)
         return f"Error generating chart: {str(e)}", 500
 
 if __name__ == '__main__':
-    print("\nStarting Flask application...")
-    app.run(debug=True, port=5000) 
+    app.logger.info("Starting Flask application...")
+    app.run(debug=True, port=5000)
