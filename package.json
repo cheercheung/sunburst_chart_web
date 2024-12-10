@@ -1,0 +1,14 @@
+{
+    "name": "polarareachartweb",
+    "version": "1.0.0",
+    "description": "Rose chart generator",
+    "scripts": {
+        "start": "netlify dev"
+    },
+    "dependencies": {
+        "chart.js": "^3.9.1"
+    },
+    "devDependencies": {
+        "netlify-cli": "^12.0.0"
+    }
+}
