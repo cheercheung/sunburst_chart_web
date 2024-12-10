@@ -18,3 +18,5 @@ pip install flask matplotlib
 
 ## 网站:直接上传数据使用
 https://polarareachart.vercel.app/
+
+提示：目前google浏览器测试失败，Safari和edge都正常，手机端也正常～
