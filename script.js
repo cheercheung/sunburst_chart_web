@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 生成图表
-    generateBtn.addEventListener('click', function() {
+    generateBtn.addEventListener('click', async function() {
         const data = collectData();
         if (data.labels.length === 0) {
             alert('请至少输入一组数据');
@@ -40,53 +40,66 @@ document.addEventListener('DOMContentLoaded', function() {
             chart.destroy();
         }
 
-        // 创建新图表
-        const ctx = document.getElementById('chartContainer').getContext('2d');
-        chart = new Chart(ctx, {
-            type: 'polarArea',
-            data: {
-                labels: data.labels,
-                datasets: [{
-                    data: data.values,
-                    backgroundColor: Array(data.values.length).fill(data.color + '80'),
-                    borderColor: Array(data.values.length).fill(data.color),
-                    borderWidth: 1,
-                    borderAlign: 'inner'
-                }]
-            },
-            options: {
-                plugins: {
-                    title: {
-                        display: true,
-                        text: data.title,
-                        font: {
-                            size: 16
+        try {
+            const response = await fetch('/api/generate_chart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            // 创建新图表
+            const ctx = document.getElementById('chartContainer').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.values,
+                        backgroundColor: Array(data.values.length).fill(data.color + '80'),
+                        borderColor: Array(data.values.length).fill(data.color),
+                        borderWidth: 1,
+                        borderAlign: 'inner'
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: data.title,
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            position: 'right'
                         }
                     },
-                    legend: {
-                        position: 'right'
-                    }
-                },
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        spacing: 5
-                    }
-                },
-                layout: {
-                    padding: 10
-                },
-                elements: {
-                    arc: {
-                        borderWidth: 1,
-                        spacing: 10
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            spacing: 5
+                        }
+                    },
+                    layout: {
+                        padding: 10
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 1,
+                            spacing: 10
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // 启用下载按钮
-        downloadBtn.disabled = false;
+            // 启用下载按钮
+            downloadBtn.disabled = false;
+        } catch (error) {
+            console.error('Error:', error);
+            alert('生成图表时发生错误，请检查网络连接');
+        }
     });
 
     // 颜色选择器同步
