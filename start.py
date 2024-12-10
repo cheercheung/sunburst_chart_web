@@ -32,8 +32,3 @@ def start_app():
 if __name__ == '__main__':
     start_app() 
     
-<<<<<<< HEAD
-    
-=======
-    
->>>>>>> 3f9fe23f301956e131e14c177a37e3c5ebfee482

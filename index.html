@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>南丁格尔玫瑰图生成器</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -31,7 +32,7 @@
                     <tr>
                         <th>标签</th>
                         <th>数值</th>
-                        <th>��作</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,8 +49,8 @@
 
         <!-- 图表显示区域 -->
         <div class="chart-section">
-            <div id="chartContainer"></div>
-            <button id="downloadSVG" disabled>下载 SVG</button>
+            <canvas id="chartContainer"></canvas>
+            <button id="downloadChart" disabled>下载图表</button>
         </div>
     </div>
     <script src="script.js"></script>

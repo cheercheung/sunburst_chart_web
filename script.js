@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const dataTable = document.getElementById('dataTable');
     const addRowBtn = document.getElementById('addRow');
     const generateBtn = document.getElementById('generateChart');
-    const downloadBtn = document.getElementById('downloadSVG');
+    const downloadBtn = document.getElementById('downloadChart');
+    let chart = null; // 保存图表实例
 
     // 添加新行
     addRowBtn.addEventListener('click', function() {
@@ -27,37 +28,65 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 生成图表
-    generateBtn.addEventListener('click', async function() {
+    generateBtn.addEventListener('click', function() {
         const data = collectData();
         if (data.labels.length === 0) {
             alert('请至少输入一组数据');
             return;
         }
 
-        try {
-            const response = await fetch('/api/generate_chart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json', // 确保服务器处理 JSON 数据
-                },
-                body: JSON.stringify(data),
-            });
-
-            // 检查响应状态
-            if (response.ok) {
-                const svgContent = await response.text(); // 获取返回的 SVG 内容
-                document.getElementById('chartContainer').innerHTML = svgContent; // 在页面显示 SVG
-                downloadBtn.disabled = false; // 启用下载按钮
-            } else if (response.status === 400) {
-                const errorMessage = await response.text();
-                alert(`请求失败：${errorMessage}`); // 显示后端返回的错误信息
-            } else {
-                alert(`生成图表失败，HTTP 状态码：${response.status}`); // 通用错误提示
-            }
-        } catch (error) {
-            console.error('Error:', error); // 在控制台记录详细错误信息
-            alert('生成图表时发生错误，请检查网络连接或后端服务是否正常运行');
+        // 销毁旧图表
+        if (chart) {
+            chart.destroy();
         }
+
+        // 创建新图表
+        const ctx = document.getElementById('chartContainer').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    data: data.values,
+                    backgroundColor: Array(data.values.length).fill(data.color + '80'),
+                    borderColor: Array(data.values.length).fill(data.color),
+                    borderWidth: 1,
+                    borderAlign: 'inner'
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: data.title,
+                        font: {
+                            size: 16
+                        }
+                    },
+                    legend: {
+                        position: 'right'
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        spacing: 5
+                    }
+                },
+                layout: {
+                    padding: 10
+                },
+                elements: {
+                    arc: {
+                        borderWidth: 1,
+                        spacing: 10
+                    }
+                }
+            }
+        });
+
+        // 启用下载按钮
+        downloadBtn.disabled = false;
     });
 
     // 颜色选择器同步
@@ -93,21 +122,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return { labels, values, title, color };
     }
 
-    // 下载SVG
+    // 下载图表
     downloadBtn.addEventListener('click', function() {
-        const svg = document.querySelector('#chartContainer svg');
-        if (svg) {
-            const svgData = new XMLSerializer().serializeToString(svg);
-            const blob = new Blob([svgData], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-
+        if (chart) {
+            const url = chart.toBase64Image();
             const link = document.createElement('a');
+            link.download = 'rose_chart.png';
             link.href = url;
-            link.download = 'rose_chart.svg';
-            document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
         }
     });
 });
