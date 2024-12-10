@@ -35,24 +35,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch('/generate_chart', {
+            const response = await fetch('http://127.0.0.1:5000/generate_chart', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json', // 确保服务器处理 JSON 数据
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
             });
 
+            // 检查响应状态
             if (response.ok) {
-                const svgContent = await response.text();
-                document.getElementById('chartContainer').innerHTML = svgContent;
-                downloadBtn.disabled = false;
+                const svgContent = await response.text(); // 获取返回的 SVG 内容
+                document.getElementById('chartContainer').innerHTML = svgContent; // 在页面显示 SVG
+                downloadBtn.disabled = false; // 启用下载按钮
+            } else if (response.status === 400) {
+                const errorMessage = await response.text();
+                alert(`请求失败：${errorMessage}`); // 显示后端返回的错误信息
             } else {
-                alert('生成图表失败');
+                alert(`生成图表失败，HTTP 状态码：${response.status}`); // 通用错误提示
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert('生成图表时发生错误');
+            console.error('Error:', error); // 在控制台记录详细错误信息
+            alert('生成图表时发生错误，请检查网络连接或后端服务是否正常运行');
         }
     });
 
