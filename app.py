@@ -11,6 +11,8 @@ def index():
 
 @app.route('/<path:path>')
 def serve_static(path):
+    if path == 'generate_chart':  # 重定向旧路径到新路径
+        return generate_chart()
     if os.path.exists(path):
         return send_file(path)
     return f"File not found: {path}", 404

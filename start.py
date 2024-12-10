@@ -10,7 +10,10 @@ def start_app():
     
     # 启动 Flask 服务器
     print("启动服务器...")
-    flask_process = subprocess.Popen([python_cmd, 'app.py'], cwd=os.path.dirname(__file__))
+    flask_process = subprocess.Popen(
+        [python_cmd, 'app.py'], 
+        cwd=os.path.dirname(__file__)
+    )
     
     # 等待服务器启动
     time.sleep(2)
@@ -30,5 +33,5 @@ def start_app():
         flask_process.wait()
 
 if __name__ == '__main__':
-    start_app() 
+    start_app()  # 恢复原来的调用
     
