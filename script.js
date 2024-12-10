@@ -13,7 +13,7 @@ const translations = {
     en: {
         title: 'Polar Area Rose Chart',
         buttonText: '中文',
-        noDataAlert: 'Please enter at least one set of data',
+        noDataAlert: 'Please enter at least 2 sets of data',
         errorAlert: 'Error generating chart, please check network connection',
         deleteBtn: 'Delete',
         addRowBtn: 'Add Row',
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 收集表���数据
+    // 收集表数据
     function collectData() {
         const rows = dataTable.querySelectorAll('tbody tr');
         const labels = [];
