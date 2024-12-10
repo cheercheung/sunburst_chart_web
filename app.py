@@ -15,6 +15,10 @@ def index():
 @app.route('/<path:path>')
 def serve_static(path):
     try:
+        # 检查是否是 API 请求
+        if path.startswith('api/'):
+            return jsonify({"error": "API endpoint not found"}), 404
+            
         file_path = os.path.join(CURRENT_DIR, path)
         if os.path.exists(file_path):
             return send_file(file_path)
@@ -22,16 +26,22 @@ def serve_static(path):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/generate-chart', methods=['POST'])
+@app.route('/api/chart/generate', methods=['POST'])
 def generate_chart():
     try:
         data = request.get_json()
         if not data:
             return jsonify({"error": "No data received"}), 400
+            
+        # 验证数据
+        if len(data.get('labels', [])) < 2:
+            return jsonify({"error": "At least 2 data points required"}), 400
+            
         return jsonify({
             "success": True,
             "message": "Chart data received successfully"
         }), 200
+        
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
