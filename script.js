@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 收集表格数据
+    // 收集表���数据
     function collectData() {
         const rows = dataTable.querySelectorAll('tbody tr');
         const labels = [];
@@ -154,11 +154,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                await fetch('/api/generate_chart', {
+                const response = await fetch('/generate-chart', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                     body: JSON.stringify(data)
                 });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (!result.success) {
+                    throw new Error(result.error || 'Unknown error');
+                }
 
                 const ctx = document.getElementById('chartContainer').getContext('2d');
                 chart = new Chart(ctx, {

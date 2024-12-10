@@ -22,14 +22,16 @@ def serve_static(path):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/generate_chart', methods=['POST'])
-@app.route('/api/generate_chart', methods=['POST'])
+@app.route('/generate-chart', methods=['POST'])
 def generate_chart():
     try:
         data = request.get_json()
         if not data:
             return jsonify({"error": "No data received"}), 400
-        return jsonify({"message": "success"}), 200
+        return jsonify({
+            "success": True,
+            "message": "Chart data received successfully"
+        }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
