@@ -103,16 +103,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 颜色选择器同步
-    document.getElementById('chartColor').addEventListener('input', function(e) {
-        document.getElementById('colorHex').value = e.target.value;
-    });
+    const colorPicker = document.getElementById('chartColor');
+    const colorHexInput = document.getElementById('colorHex');
 
-    document.getElementById('colorHex').addEventListener('input', function(e) {
-        const value = e.target.value;
-        if (/^#[0-9A-F]{6}$/i.test(value)) {
-            document.getElementById('chartColor').value = value;
-        }
-    });
+    if (colorPicker && colorHexInput) { // 添加空值检查
+        colorPicker.addEventListener('input', function(e) {
+            colorHexInput.value = e.target.value;
+        });
+
+        colorHexInput.addEventListener('input', function(e) {
+            const value = e.target.value;
+            if (/^#[0-9A-F]{6}$/i.test(value)) {
+                colorPicker.value = value;
+            }
+        });
+    }
 
     // 收集表格数据
     function collectData() {

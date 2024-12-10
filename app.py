@@ -15,6 +15,7 @@ def serve_static(path):
         return send_file(path)
     return f"File not found: {path}", 404
 
+@app.route('/generate_chart', methods=['POST'])
 @app.route('/api/generate_chart', methods=['POST'])
 def generate_chart():
     """处理图表生成请求"""
