@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 收集表数据
+    // 收集表��据
     function collectData() {
         const rows = dataTable.querySelectorAll('tbody tr');
         const labels = [];
@@ -154,24 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch('/.netlify/functions/generate-chart', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                if (!result.success) {
-                    throw new Error(result.error || 'Unknown error');
-                }
-
+                // 不需要发送到后端，直接在前端生成图表
                 const ctx = document.getElementById('chartContainer').getContext('2d');
                 chart = new Chart(ctx, {
                     type: 'polarArea',
@@ -210,6 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
+                // 启用下载按钮
                 downloadBtns.forEach(btn => btn.disabled = false);
             } catch (error) {
                 console.error('Error:', error);
