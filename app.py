@@ -1,21 +1,47 @@
-from flask import Flask, send_file, request, send_from_directory
+from flask import Flask, send_file, request, send_from_directory, jsonify
 from flask_cors import CORS
 import os
-import logging  # 添加日志支持
+import logging
+import traceback  # 添加堆栈跟踪
 
 app = Flask(__name__)
 CORS(app)
 
-# 配置日志
-logging.basicConfig(level=logging.DEBUG)
+# 配置详细的日志
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 @app.route('/')
 def index():
-    app.logger.info("访问首页")
-    return send_file('index.html')
+    try:
+        app.logger.info("访问首页")
+        return send_file('index.html')
+    except Exception as e:
+        app.logger.error(f"首页错误: {str(e)}\n{traceback.format_exc()}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/<path:path>')
 def serve_static(path):
+    try:
+        app.logger.info(f"请求路径: {path}")
+        if path == 'generate_chart':
+            return generate_chart()
+        
+        # 检查文件是否存在
+        file_path = os.path.join(os.path.dirname(__file__), path)
+        app.logger.info(f"尝试访问文件: {file_path}")
+        
+        if os.path.exists(file_path):
+            app.logger.info(f"提供文件: {path}")
+            return send_file(file_path)
+            
+        app.logger.error(f"文件未找到: {path}")
+        return jsonify({"error": "File not found"}), 404
+    except Exception as e:
+        app.logger.error(f"静态文件错误: {str(e)}\n{traceback.format_exc()}")
+        return jsonify({"error": str(e)}), 500
     app.logger.info(f"请求路径: {path}")
     if path == 'generate_chart':
         app.logger.info("重定向到图表生成")
