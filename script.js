@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 收集表��据
+    // 收集表数据
     function collectData() {
         const rows = dataTable.querySelectorAll('tbody tr');
         const labels = [];
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch('/api/chart/generate', {
+                const response = await fetch('/.netlify/functions/generate-chart', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

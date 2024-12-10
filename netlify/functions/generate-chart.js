@@ -9,31 +9,32 @@ exports.handler = async function(event, context) {
 
     try {
         const data = JSON.parse(event.body);
-        const { labels, values } = data;
 
         // 验证数据
-        if (!labels || !values || labels.length === 0 || values.length === 0) {
+        if (!data || !data.labels || data.labels.length < 2) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: 'Invalid data format' })
+                body: JSON.stringify({
+                    error: 'At least 2 data points required'
+                })
             };
         }
 
-        // 直接返回处理后的数据
         return {
             statusCode: 200,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({
-                labels: labels,
-                values: values
+                success: true,
+                message: 'Chart data received successfully'
             })
         };
     } catch (error) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Server error' })
+            body: JSON.stringify({ error: error.message })
         };
     }
 };

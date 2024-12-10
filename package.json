@@ -1,12 +1,12 @@
 {
-    "name": "polarareachartweb",
+    "name": "polar-area-chart",
     "version": "1.0.0",
-    "description": "Rose chart generator",
+    "description": "Polar Area Chart Generator",
     "scripts": {
         "start": "netlify dev"
     },
     "dependencies": {
-        "chart.js": "^3.9.1"
+        "@netlify/functions": "^1.6.0"
     },
     "devDependencies": {
         "netlify-cli": "^12.0.0"
