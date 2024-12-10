@@ -19,7 +19,10 @@ h1 {
 /* 表格样式 */
 
 .input-section {
-    margin-bottom: 30px;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
 }
 
 table {
@@ -93,4 +96,150 @@ button:disabled {
     width: 100%;
     max-width: 600px;
     margin: 0 auto 20px;
+}
+
+
+/* 添加导航栏样式 */
+
+.navbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0;
+}
+
+.language-btn {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.language-btn:hover {
+    background-color: #45a049;
+}
+
+
+/* 标题输入区域样式 */
+
+.title-section {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.title-section label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.title-section small {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 12px;
+}
+
+
+/* 颜色选择区域样式 */
+
+.color-section {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.color-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.color-section input[type="text"] {
+    width: 100px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.color-preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background-color: #4CAF50;
+}
+
+.color-section small {
+    display: block;
+    color: #666;
+    font-size: 12px;
+}
+
+.color-palettes {
+    margin: 15px 0;
+}
+
+.palette-group {
+    margin: 10px 0;
+}
+
+.palette-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.color-chips {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.color-chip {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    transition: transform 0.2s;
+}
+
+.color-chip:hover {
+    transform: scale(1.1);
+}
+
+
+/* 为每个色块设置背景色 */
+
+.color-chip {
+    background-color: attr(data-color);
+}
+
+
+/* 部分标题通用样式 */
+
+.section-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+    padding: 10px 0;
+    margin: 30px 0 15px 0;
+    border-bottom: 2px solid #4CAF50;
+}
+
+
+/* 部分之间的分隔 */
+
+.section-divider {
+    height: 1px;
+    background-color: #eee;
+    margin: 30px 0;
 }

@@ -1,19 +1,127 @@
+// 添加在文件开头，DOMContentLoaded 事件之前
+const translations = {
+    cn: {
+        title: "玫瑰图生成器",
+        subtitle: "轻松创建精美的玫瑰图,请注意至少选择2组及以上的数据，最好是6-12组的数据",
+        titleLabel: "标题：",
+        titleTip: "（可自定义修改图表标题）",
+        chartTitle: "南丁格尔玫瑰图",
+        colorLabel: "图表颜色：",
+        colorTip: "（支持十六进制颜色代码，例如：#FF0000 表示红色）",
+        label: "标签",
+        value: "数值",
+        operation: "操作",
+        inputLabel: "输入标签",
+        inputValue: "输入数值",
+        deleteBtn: "删除",
+        addRowBtn: "添加行",
+        generateBtn: "生成图表",
+        downloadBtn: "下载图表",
+        chartTitleSection: "图表标题设置",
+        colorSection: "图表颜色设置",
+        dataSection: "数据输入",
+        warmColors: "暖色系：",
+        coolColors: "冷色系：",
+        natureColors: "自然色系：",
+    },
+    en: {
+        title: "Rose Chart Generator",
+        subtitle: "Create Beautiful Rose Charts Easily, please note that at least 2 sets of data are required, preferably 6-12 sets",
+        titleLabel: "Title:",
+        titleTip: "(You can customize the chart title)",
+        chartTitle: "polar area Rose Chart",
+        colorLabel: "Chart Color:",
+        colorTip: "(Supports hexadecimal color code, e.g., #FF0000 for red)",
+        label: "Label",
+        value: "Value",
+        operation: "Operation",
+        inputLabel: "Enter label",
+        inputValue: "Enter value",
+        deleteBtn: "Delete",
+        addRowBtn: "Add Row",
+        generateBtn: "Generate Chart",
+        downloadBtn: "Download Chart",
+        chartTitleSection: "Chart Title Settings",
+        colorSection: "Chart Color Settings",
+        dataSection: "Data Input",
+        warmColors: "Warm Colors:",
+        coolColors: "Cool Colors:",
+        natureColors: "Nature Colors:",
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
-    // 获取DOM元素
+    // 首先获取所有DOM元素
     const dataTable = document.getElementById('dataTable');
     const addRowBtn = document.getElementById('addRow');
     const generateBtn = document.getElementById('generateChart');
     const downloadBtn = document.getElementById('downloadChart');
-    let chart = null; // 保存图表实例
+    const colorPicker = document.getElementById('chartColor');
+    const colorHexInput = document.getElementById('colorHex');
+    const languageToggle = document.getElementById('languageToggle');
+    const colorPreview = document.getElementById('colorPreview');
+    let chart = null;
 
-    // 添加新行
-    addRowBtn.addEventListener('click', function() {
+    // 检查必要的元素是否存在
+    if (!dataTable || !addRowBtn || !generateBtn || !downloadBtn || !colorPicker || !colorHexInput || !languageToggle || !colorPreview) {
+        console.error('找不到必要的DOM元素');
+        return;
+    }
+
+    // 语言切换相关函数
+    let currentLang = 'cn';
+
+    function updateLanguage(lang) {
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (translations[lang][key]) {
+                if (element.tagName === 'INPUT') {
+                    element.placeholder = translations[lang][key];
+                    if (element.id === 'chartTitle') {
+                        element.value = translations[lang]['chartTitle'];
+                    }
+                } else {
+                    element.textContent = translations[lang][key];
+                }
+            }
+        });
+
+        // 更新动态添加的行的占位符文本
+        const labelInputs = document.querySelectorAll('.label-input');
+        const valueInputs = document.querySelectorAll('.value-input');
+        const deleteButtons = document.querySelectorAll('.delete-row');
+
+        labelInputs.forEach(input => {
+            input.placeholder = translations[lang]['inputLabel'];
+        });
+        valueInputs.forEach(input => {
+            input.placeholder = translations[lang]['inputValue'];
+        });
+        deleteButtons.forEach(button => {
+            button.textContent = translations[lang]['deleteBtn'];
+        });
+    }
+
+    function createNewRow(lang) {
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
-            <td><input type="text" class="label-input" placeholder="输入标签"></td>
-            <td><input type="number" class="value-input" placeholder="输入数值"></td>
-            <td><button class="delete-row">删除</button></td>
+            <td><input type="text" class="label-input" placeholder="${translations[lang]['inputLabel']}" data-i18n="inputLabel"></td>
+            <td><input type="number" class="value-input" placeholder="${translations[lang]['inputValue']}" data-i18n="inputValue"></td>
+            <td><button class="delete-row" data-i18n="deleteBtn">${translations[lang]['deleteBtn']}</button></td>
         `;
+        return newRow;
+    }
+
+    // 设置事件监听器
+    languageToggle.addEventListener('click', function() {
+        currentLang = currentLang === 'cn' ? 'en' : 'cn';
+        updateLanguage(currentLang);
+        this.textContent = currentLang === 'cn' ? 'English' : '中文';
+    });
+
+    addRowBtn.addEventListener('click', function() {
+        const newRow = createNewRow(currentLang);
         dataTable.querySelector('tbody').appendChild(newRow);
     });
 
@@ -35,11 +143,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // 销毁旧图表
-        if (chart) {
-            chart.destroy();
-        }
-
         try {
             const response = await fetch('/api/generate_chart', {
                 method: 'POST',
@@ -48,6 +151,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(data),
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // 销毁旧图表
+            if (chart) {
+                chart.destroy();
+            }
 
             // 创建新图表
             const ctx = document.getElementById('chartContainer').getContext('2d');
@@ -79,16 +191,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     scales: {
                         r: {
                             beginAtZero: true,
-                            spacing: 5
+                            spacing: 10
                         }
                     },
                     layout: {
-                        padding: 10
+                        padding: 20
                     },
                     elements: {
                         arc: {
-                            borderWidth: 1,
-                            spacing: 10
+                            borderWidth: 2,
+                            spacing: 20,
+                            borderAlign: 'inner',
+                            weight: 1
                         }
                     }
                 }
@@ -103,21 +217,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 颜色选择器同步
-    const colorPicker = document.getElementById('chartColor');
-    const colorHexInput = document.getElementById('colorHex');
+    colorPicker.addEventListener('input', function(e) {
+        const color = e.target.value;
+        colorHexInput.value = color;
+        colorPreview.style.backgroundColor = color;
+    });
 
-    if (colorPicker && colorHexInput) { // 添加空值检查
-        colorPicker.addEventListener('input', function(e) {
-            colorHexInput.value = e.target.value;
-        });
-
-        colorHexInput.addEventListener('input', function(e) {
-            const value = e.target.value;
-            if (/^#[0-9A-F]{6}$/i.test(value)) {
-                colorPicker.value = value;
-            }
-        });
-    }
+    colorHexInput.addEventListener('input', function(e) {
+        const value = e.target.value;
+        if (/^#[0-9A-F]{6}$/i.test(value)) {
+            colorPicker.value = value;
+            colorPreview.style.backgroundColor = value;
+        }
+    });
 
     // 收集表格数据
     function collectData() {
@@ -149,5 +261,19 @@ document.addEventListener('DOMContentLoaded', function() {
             link.href = url;
             link.click();
         }
+    });
+
+    // 色板点击事件处理
+    document.querySelectorAll('.color-chip').forEach(chip => {
+        // 设置初始背景色
+        chip.style.backgroundColor = chip.dataset.color;
+
+        // 添加点击事件
+        chip.addEventListener('click', function() {
+            const color = this.dataset.color;
+            colorPicker.value = color;
+            colorHexInput.value = color;
+            colorPreview.style.backgroundColor = color;
+        });
     });
 });

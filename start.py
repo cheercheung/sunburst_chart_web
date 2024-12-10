@@ -6,22 +6,20 @@ import sys
 import platform
 
 def start_app():
-    # 根据系统类型选择 Python 命令
-    if platform.system() == 'Darwin':  # macOS
-        python_cmd = 'python3'
-    elif platform.system() == 'Windows':
-        python_cmd = 'python'
-    else:
-        python_cmd = 'python3'
+    # 获取当前脚本的绝对路径
+    current_dir = os.path.dirname(os.path.abspath(__file__))
     
+    # 根据系统类型选择 Python 命令
+    python_cmd = 'python3' if platform.system() == 'Darwin' else 'python'
+    
+    print(f"当前工作目录: {current_dir}")
     print(f"使用 Python 命令: {python_cmd}")
-    print(f"当前工作目录: {os.path.dirname(os.path.abspath(__file__))}")
     
     # 启动 Flask 服务器
     print("启动服务器...")
     flask_process = subprocess.Popen(
         [python_cmd, 'app.py'],
-        cwd=os.path.dirname(os.path.abspath(__file__))
+        cwd=current_dir
     )
     
     # 等待服务器启动

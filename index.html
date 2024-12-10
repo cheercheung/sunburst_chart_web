@@ -7,54 +7,102 @@
     <title>南丁格尔玫瑰图生成器</title>
     <link rel="stylesheet" href="/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <h1>南丁格尔玫瑰图生成器</h1>
+        <!-- 添加语言切换按钮 -->
+        <nav class="navbar">
+            <button id="languageToggle" class="language-btn" data-lang="cn">English</button>
+        </nav>
+
+        <div class="header">
+            <h1 data-i18n="title">玫瑰图生成器</h1>
+            <p data-i18n="subtitle">轻松创建精美的玫瑰图,请注意至少选择2组及以上的数据，最好是6-12组的数据</p>
+        </div>
 
         <!-- 标题输入区域 -->
+        <h2 class="section-title" data-i18n="chartTitleSection">图表标题设置</h2>
         <div class="title-section">
-            <input type="text" id="chartTitle" placeholder="输入图表标题" value="南丁格尔玫瑰图">
+            <input type="text" id="chartTitle" placeholder="请输入图表标题" value="南丁格尔玫瑰图" data-i18n="chartTitle">
+            <small data-i18n="titleTip">（可自定义修改图表标题）</small>
         </div>
+
+        <div class="section-divider"></div>
 
         <!-- 颜色选择区域 -->
+        <h2 class="section-title" data-i18n="colorSection">图表颜色设置</h2>
         <div class="color-section">
-            <label for="chartColor">图表颜色：</label>
-            <input type="color" id="chartColor" value="#4CAF50">
-            <input type="text" id="colorHex" value="#4CAF50" placeholder="#000000">
+            <div class="color-inputs">
+                <input type="color" id="chartColor" value="#4CAF50">
+                <input type="text" id="colorHex" value="#4CAF50" placeholder="#000000">
+                <div class="color-preview" id="colorPreview"></div>
+            </div>
+            <div class="color-palettes">
+                <div class="palette-group">
+                    <div class="palette-label" data-i18n="warmColors">暖色系：</div>
+                    <div class="color-chips">
+                        <div class="color-chip" data-color="#FF6B6B"></div>
+                        <div class="color-chip" data-color="#FF8E72"></div>
+                        <div class="color-chip" data-color="#FFA07A"></div>
+                        <div class="color-chip" data-color="#FFB88C"></div>
+                    </div>
+                </div>
+                <div class="palette-group">
+                    <div class="palette-label" data-i18n="coolColors">冷色系：</div>
+                    <div class="color-chips">
+                        <div class="color-chip" data-color="#4A90E2"></div>
+                        <div class="color-chip" data-color="#67B8DE"></div>
+                        <div class="color-chip" data-color="#86E3CE"></div>
+                        <div class="color-chip" data-color="#5DADE2"></div>
+                    </div>
+                </div>
+                <div class="palette-group">
+                    <div class="palette-label" data-i18n="natureColors">自然色系：</div>
+                    <div class="color-chips">
+                        <div class="color-chip" data-color="#68B984"></div>
+                        <div class="color-chip" data-color="#97C1A9"></div>
+                        <div class="color-chip" data-color="#8DAB7F"></div>
+                        <div class="color-chip" data-color="#98B4AA"></div>
+                    </div>
+                </div>
+            </div>
+            <small data-i18n="colorTip">（支持十六进制颜色代码，例如：#FF0000 表示红色）</small>
         </div>
 
+        <div class="section-divider"></div>
+
         <!-- 数据输入区域 -->
+        <h2 class="section-title" data-i18n="dataSection">数据输入</h2>
         <div class="input-section">
             <table id="dataTable">
                 <thead>
                     <tr>
-                        <th>标签</th>
-                        <th>数值</th>
-                        <th>操作</th>
+                        <th data-i18n="label">标签</th>
+                        <th data-i18n="value">数值</th>
+                        <th data-i18n="operation">操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="text" class="label-input" placeholder="输入标签"></td>
-                        <td><input type="number" class="value-input" placeholder="输入数值"></td>
-                        <td><button class="delete-row">删除</button></td>
+                        <td><input type="text" class="label-input" placeholder="输入标签" data-i18n="inputLabel"></td>
+                        <td><input type="number" class="value-input" placeholder="输入数值" data-i18n="inputValue"></td>
+                        <td><button class="delete-row" data-i18n="deleteBtn">删除</button></td>
                     </tr>
                 </tbody>
             </table>
-            <button id="addRow">添加行</button>
-            <button id="generateChart">生成图表</button>
+            <button id="addRow" data-i18n="addRowBtn">添加行</button>
+            <button id="generateChart" data-i18n="generateBtn">生成图表</button>
         </div>
 
         <!-- 图表显示区域 -->
         <div class="chart-section">
             <canvas id="chartContainer"></canvas>
-            <button id="downloadChart" disabled>下载图表</button>
+            <button id="downloadChart" disabled data-i18n="downloadBtn">下载图表</button>
         </div>
     </div>
-    <script src="/script.js" defer></script>
+    <script src="/script.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 
 </html>
