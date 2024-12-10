@@ -12,18 +12,27 @@ matplotlib.use('Agg')  # 使用非交互式后端
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 创建 Flask 应用，使用当前目录作为静态文件目录
+<<<<<<< HEAD
 app = Flask(__name__, static_folder=current_dir)
+=======
+app = Flask(__name__, static_url_path='')
+>>>>>>> 3f9fe23f301956e131e14c177a37e3c5ebfee482
 CORS(app)  # 启用 CORS 支持
 
 @app.route('/')
 def index():
     """提供 index.html 主页面"""
     try:
+<<<<<<< HEAD
         return send_file(os.path.join(current_dir, 'index.html'))
+=======
+        return send_file('index.html')
+>>>>>>> 3f9fe23f301956e131e14c177a37e3c5ebfee482
     except Exception as e:
         app.logger.error(f"Error serving index.html: {str(e)}")
         return f"Error: {str(e)}", 500
 
+<<<<<<< HEAD
 @app.route('/<path:filename>')
 def static_files(filename):
     """提供静态文件（如 CSS 和 JS）"""
@@ -35,6 +44,24 @@ def static_files(filename):
         return send_file(filepath)
     except Exception as e:
         app.logger.error(f"Error serving file {filename}: {str(e)}")
+=======
+@app.route('/styles.css')
+def styles():
+    """提供样式文件"""
+    try:
+        return send_file('styles.css')
+    except Exception as e:
+        app.logger.error(f"Error serving styles.css: {str(e)}")
+        return f"Error: {str(e)}", 500
+
+@app.route('/script.js')
+def script():
+    """提供 JavaScript 文件"""
+    try:
+        return send_file('script.js')
+    except Exception as e:
+        app.logger.error(f"Error serving script.js: {str(e)}")
+>>>>>>> 3f9fe23f301956e131e14c177a37e3c5ebfee482
         return f"Error: {str(e)}", 500
 
 @app.route('/generate_chart', methods=['POST'])
