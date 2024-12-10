@@ -1,22 +1,51 @@
-/* 整体布局 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    box-shadow: none;
+    width: 100%;
 }
-
-
-/* 标题样式 */
 
 h1 {
     text-align: center;
     color: #333;
+    margin-bottom: 40px;
+    font-size: 2em;
 }
 
+.title-section,
+.color-section {
+    margin-bottom: 20px;
+}
 
-/* 表格样式 */
+#chartTitle {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.color-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#colorHex {
+    width: 100px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
 .input-section {
     margin-bottom: 30px;
@@ -25,7 +54,10 @@ h1 {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
 th,
@@ -36,30 +68,25 @@ td {
 }
 
 th {
-    background-color: #f5f5f5;
+    background-color: #f8f8f8;
 }
-
-
-/* 输入框样式 */
 
 input {
     width: 100%;
-    padding: 8px;
+    padding: 5px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    background-color: #fff;
 }
 
-
-/* 按钮样式 */
-
 button {
-    padding: 8px 16px;
-    margin: 5px;
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
+    margin-right: 10px;
 }
 
 button:hover {
@@ -79,18 +106,340 @@ button:disabled {
     background-color: #da190b;
 }
 
-
-/* 图表区域样式 */
-
 .chart-section {
     margin-top: 30px;
-    text-align: center;
-    max-width: 800px;
-    margin: 30px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 #chartContainer {
     width: 100%;
-    max-width: 600px;
-    margin: 0 auto 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    display: block;
+    background-color: white;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+#downloadChart {
+    display: block;
+    margin: 20px auto 0;
+}
+
+.language-switch {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.language-switch button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+
+.language-switch button:hover {
+    background-color: #45a049;
+}
+
+.panel {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 15px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.panel h2 {
+    color: #333;
+    font-size: 1.5em;
+    margin: 0 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #4CAF50;
+}
+
+.panel-content {
+    padding: 10px;
+}
+
+.button-group {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+
+/* 添加注释样式 */
+
+.note,
+.color-note {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+
+/* 颜色面板样式 */
+
+.color-palettes {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
+
+.palette-section {
+    margin-bottom: 20px;
+}
+
+.palette-section:last-child {
+    margin-bottom: 0;
+}
+
+.palette-title {
+    font-size: 0.95em;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.palette-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.palette-color {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.palette-color:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* 添加颜色提示工具 */
+
+.palette-color::after {
+    content: attr(title);
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    transform: translateY(-30px);
+}
+
+.palette-color:hover::after {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* 调整颜色选择区域的样式 */
+
+.color-section {
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+/* 基础响应式设置 */
+
+* {
+    box-sizing: border-box;
+}
+
+
+/* 修改现有的容器样式 */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    box-shadow: none;
+    width: 100%;
+}
+
+
+/* 语言切换按钮响应式 */
+
+.language-switch {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+
+/* 面板响应式调整 */
+
+.panel {
+    padding: 15px;
+    margin-bottom: 20px;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+/* 表格响应式 */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* 按钮组响应式 */
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+
+/* 颜色选择区域响应式 */
+
+.color-section {
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+/* 调整图表容器 */
+
+#chartContainer {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* 媒体查询 - 移动设备 */
+
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        padding: 10px;
+    }
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+    .panel h2 {
+        font-size: 1.2em;
+    }
+    /* 调整表单元素 */
+    input,
+    button {
+        font-size: 16px;
+        padding: 8px;
+    }
+    /* 调整颜色选择器布局 */
+    .color-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    #colorHex {
+        width: 100%;
+        max-width: 200px;
+    }
+    /* 调整色板布局 */
+    .palette-group {
+        gap: 8px;
+    }
+    .palette-color {
+        width: 32px;
+        height: 32px;
+    }
+    /* 调整按钮布局 */
+    .button-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    .button-group button {
+        width: 100%;
+        margin: 0;
+    }
+    /* 调整图表区域 */
+    .chart-section {
+        padding: 10px;
+    }
+    #chartContainer {
+        padding: 10px;
+    }
+    /* 调整下载按钮 */
+    #downloadChart-zh,
+    #downloadChart-en {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+
+/* 针对超小屏幕设备的优化 */
+
+@media screen and (max-width: 480px) {
+    .panel {
+        padding: 10px;
+    }
+    table {
+        font-size: 14px;
+    }
+    th,
+    td {
+        padding: 8px 5px;
+    }
+    .delete-row {
+        padding: 5px 10px;
+    }
+    /* 调整图例位置 */
+    .chart-section canvas {
+        margin-bottom: 20px;
+    }
+}
+
+
+/* 横屏模式优化 */
+
+@media screen and (max-height: 480px) and (orientation: landscape) {
+    .container {
+        padding: 5px;
+    }
+    .panel {
+        margin-bottom: 10px;
+    }
+    /* 优化图表显示 */
+    #chartContainer {
+        height: 70vh;
+    }
 }
