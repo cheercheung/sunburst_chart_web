@@ -1,0 +1,8 @@
+{
+    "name": "polar-area-chart",
+    "version": "1.0.0",
+    "description": "南丁格尔玫瑰图生成器",
+    "dependencies": {
+        "@vercel/analytics": "^1.1.1"
+    }
+}
