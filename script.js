@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 生成图���
+    // 生成图表
     generateBtn.addEventListener('click', async function() {
         const data = collectData();
         if (data.labels.length === 0) {
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch('http://127.0.0.1:5000/generate_chart', {
+            const response = await fetch('/api/generate_chart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', // 确保服务器处理 JSON 数据
