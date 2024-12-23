@@ -1,53 +1,85 @@
-from rose_chart import generate_rose_chart
-import traceback
-import sys
+import unittest
+from sunburst import generate_sunburst
 
-def test_chart():
-    # 测试数据
-    test_labels = ["测试A", "测试B", "测试C"]
-    test_values = [100, 200, 300]
-    
-    print("开始测试生成图表...")
-    print(f"Python version: {sys.version}")
-    print(f"测试数据: labels={test_labels}, values={test_values}")
-    
-    try:
-        print("调用 generate_rose_chart...")
-        svg_content = generate_rose_chart(test_labels, test_values)
-        
-        if svg_content:
-            print(f"生成的 SVG 内容长度: {len(svg_content)}")
-            # 保存到文件
-            try:
-                with open('test_output.svg', 'w', encoding='utf-8') as f:
-                    f.write(svg_content)
-                print("测试成功：图表已保存到 test_output.svg")
-                return True
-            except Exception as e:
-                print(f"保存文件时出错: {str(e)}")
-                print(traceback.format_exc())
-                return False
-        else:
-            print("测试失败：generate_rose_chart 返回 None")
-            return False
-    except Exception as e:
-        print(f"测试出错：{str(e)}")
-        print("错误详情：")
-        print(traceback.format_exc())
-        return False
+class TestSunburstChart(unittest.TestCase):
+    def setUp(self):
+        # 测试数据
+        self.test_data = {
+            'simple': {
+                'labels_list': [
+                    ["食物", "食物", "食物"],  # 父级标签
+                    ["水果", "水果", "蔬菜"],  # 子级标签
+                ],
+                'values': [30, 20, 50],
+                'title': "测试旭日图",
+                'cmap': 'viridis'
+            },
+            'empty': {
+                'labels_list': [[], []],
+                'values': [],
+                'title': "",
+                'cmap': 'viridis'
+            },
+            'invalid_length': {
+                'labels_list': [
+                    ["食物", "食物"],  # 长度不匹配
+                    ["水果", "水果", "蔬菜"],
+                ],
+                'values': [30, 20, 50],
+                'title': "测试数据",
+                'cmap': 'viridis'
+            }
+        }
 
-if __name__ == "__main__":
-    # 检查依赖
-    try:
-        import matplotlib
-        print(f"Matplotlib version: {matplotlib.__version__}")
-        print(f"Matplotlib backend: {matplotlib.get_backend()}")
-        
-        import numpy
-        print(f"Numpy version: {numpy.__version__}")
-    except Exception as e:
-        print(f"导入依赖时出错: {str(e)}")
-    
-    print("\n开始测试...")
-    success = test_chart()
-    print(f"\n测试结果: {'成功' if success else '失败'}") 
+    def test_normal_generation(self):
+        """测试正常数据生成图表"""
+        data = self.test_data['simple']
+        svg_content = generate_sunburst(
+            labels_list=data['labels_list'],
+            values=data['values'],
+            title=data['title'],
+            cmap=data['cmap']
+        )
+        self.assertIsNotNone(svg_content)
+        self.assertIn('<svg', svg_content)
+        self.assertIn('</svg>', svg_content)
+
+    def test_empty_data(self):
+        """测试空数据处理"""
+        data = self.test_data['empty']
+        svg_content = generate_sunburst(
+            labels_list=data['labels_list'],
+            values=data['values'],
+            title=data['title'],
+            cmap=data['cmap']
+        )
+        self.assertIsNone(svg_content)
+
+    def test_invalid_data_length(self):
+        """测试数据长度不匹配的情况"""
+        data = self.test_data['invalid_length']
+        svg_content = generate_sunburst(
+            labels_list=data['labels_list'],
+            values=data['values'],
+            title=data['title'],
+            cmap=data['cmap']
+        )
+        self.assertIsNone(svg_content)
+
+    def test_large_dataset(self):
+        """测试大数据集"""
+        large_data = {
+            'labels_list': [
+                ["分类A"] * 10 + ["分类B"] * 10,  # 父级标签
+                [f"子类{i}" for i in range(20)],  # 子级标签
+            ],
+            'values': list(range(1, 21)),  # 1到20的数值
+            'title': "大数据集测试",
+            'cmap': 'viridis'
+        }
+        svg_content = generate_sunburst(**large_data)
+        self.assertIsNotNone(svg_content)
+        self.assertIn('<svg', svg_content)
+
+if __name__ == '__main__':
+    unittest.main() 

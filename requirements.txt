@@ -1,5 +1,4 @@
 flask==2.0.1
 flask-cors==3.0.10
-Werkzeug==2.0.1
-matplotlib
-numpy 
+matplotlib>=3.7.0
+numpy>=1.21.2 

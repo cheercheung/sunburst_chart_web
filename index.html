@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>南丁格尔玫瑰图生成器</title>
+    <title>旭日图生成器</title>
     <link rel="stylesheet" href="/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -14,71 +14,82 @@
         <button id="toggleLanguage">English</button>
     </div>
     <div class="container">
-        <h1 data-lang="zh">南丁格尔玫瑰图生成器</h1>
-        <h1 data-lang="en" style="display: none;">Nightingale Rose Chart Generator</h1>
+        <h1 data-lang="zh">旭日图生成器</h1>
+        <h1 data-lang="en" style="display: none;">Sunburst Chart Generator</h1>
 
         <!-- 第一部分：图表标题设置 -->
         <section class="panel">
             <h2 data-lang="zh">1. 图表标题设置</h2>
             <h2 data-lang="en" style="display: none;">1. Chart Title Settings</h2>
             <div class="panel-content">
-                <input type="text" id="chartTitle" data-placeholder-zh="输入图表标题" data-placeholder-en="Enter chart title" placeholder="输入图表标题" value="南丁格尔玫瑰图">
-                <div class="note" data-lang="zh">备注：可以自定义修改标题内容，将显示在图表的顶部</div>
+                <input type="text" id="chartTitle" data-placeholder-zh="输入图表标题" data-placeholder-en="Enter chart title" placeholder="输入图表标题" value="旭日图">
+                <div class="note" data-lang="zh">备注：可以自定义修改内容，将显示在图表的顶部</div>
                 <div class="note" data-lang="en" style="display: none;">Note: You can customize the title content, which will be displayed at the top of the chart</div>
             </div>
         </section>
 
-        <!-- 第二部分：颜色设置 -->
+        <!-- 第二部分：图表设置 -->
         <section class="panel">
-            <h2 data-lang="zh">2. 颜色设置</h2>
-            <h2 data-lang="en" style="display: none;">2. Color Settings</h2>
+            <h2 data-lang="zh">2. 图表设置</h2>
+            <h2 data-lang="en" style="display: none;">2. Chart Settings</h2>
             <div class="panel-content">
-                <div class="color-section">
-                    <label for="chartColor" data-lang="zh">图表颜色：</label>
-                    <label for="chartColor" data-lang="en" style="display: none;">Chart Color:</label>
-                    <input type="color" id="chartColor" value="#4CAF50">
-                    <input type="text" id="colorHex" value="#4CAF50" placeholder="#000000">
-                </div>
-                <div class="color-note" data-lang="zh">提示：颜色使用十六进制表示，例如：#FF0000 表示红色</div>
-                <div class="color-note" data-lang="en" style="display: none;">Tip: Colors are in hexadecimal format, e.g., #FF0000 for red</div>
-
-                <div class="color-palettes">
-                    <!-- 清新自然色 -->
-                    <div class="palette-section">
-                        <div class="palette-title" data-lang="zh">清新自然色：</div>
-                        <div class="palette-title" data-lang="en" style="display: none;">Fresh Nature Colors:</div>
-                        <div class="palette-group">
-                            <button class="palette-color" style="background-color: #98DDCA" data-color="#98DDCA" title="薄荷绿 Mint"></button>
-                            <button class="palette-color" style="background-color: #D5ECC2" data-color="#D5ECC2" title="嫩草绿 Light Green"></button>
-                            <button class="palette-color" style="background-color: #FFD3B5" data-color="#FFD3B5" title="珊瑚橙 Coral"></button>
-                            <button class="palette-color" style="background-color: #FFAAA7" data-color="#FFAAA7" title="浅粉 Light Pink"></button>
-                            <button class="palette-color" style="background-color: #A8E6CF" data-color="#A8E6CF" title="青瓷绿 Celadon"></button>
-                        </div>
-                    </div>
-                    <!-- 温柔糖果色 -->
-                    <div class="palette-section">
-                        <div class="palette-title" data-lang="zh">温柔糖果色：</div>
-                        <div class="palette-title" data-lang="en" style="display: none;">Soft Candy Colors:</div>
-                        <div class="palette-group">
-                            <button class="palette-color" style="background-color: #FFB5E8" data-color="#FFB5E8" title="棉花糖粉 Cotton Candy"></button>
-                            <button class="palette-color" style="background-color: #B5DEFF" data-color="#B5DEFF" title="天空蓝 Sky Blue"></button>
-                            <button class="palette-color" style="background-color: #AFF8DB" data-color="#AFF8DB" title="薄荷奶绿 Mint Milk"></button>
-                            <button class="palette-color" style="background-color: #FFC9DE" data-color="#FFC9DE" title="草莓奶昔 Strawberry"></button>
-                            <button class="palette-color" style="background-color: #E7FFAC" data-color="#E7FFAC" title="柠檬糖 Lemon"></button>
-                        </div>
+                <div class="settings-section">
+                    <div class="setting-item">
+                        <label for="levelCount" data-lang="zh">层级数量：</label>
+                        <label for="levelCount" data-lang="en" style="display: none;">Level Count:</label>
+                        <select id="levelCount">
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                        <div class="note" data-lang="zh">选择图表的层级数量（2-6层）</div>
+                        <div class="note" data-lang="en" style="display: none;">Select the number of levels (2-6 levels)</div>
                     </div>
 
-                    <!-- 北欧简约色 -->
-                    <div class="palette-section">
-                        <div class="palette-title" data-lang="zh">北欧简约色：</div>
-                        <div class="palette-title" data-lang="en" style="display: none;">Nordic Colors:</div>
-                        <div class="palette-group">
-                            <button class="palette-color" style="background-color: #92A8D1" data-color="#92A8D1" title="雾霾蓝 Dusty Blue"></button>
-                            <button class="palette-color" style="background-color: #B5D6D6" data-color="#B5D6D6" title="瓷青 Porcelain"></button>
-                            <button class="palette-color" style="background-color: #F0B5B3" data-color="#F0B5B3" title="玫瑰粉 Rose"></button>
-                            <button class="palette-color" style="background-color: #C7CEEA" data-color="#C7CEEA" title="薰衣草 Lavender"></button>
-                            <button class="palette-color" style="background-color: #DCEDC1" data-color="#DCEDC1" title="青苔绿 Moss"></button>
+                    <div class="setting-item">
+                        <label for="colorScheme" data-lang="zh">颜色方案：</label>
+                        <label for="colorScheme" data-lang="en" style="display: none;">Color Scheme:</label>
+                        <div class="color-scheme-container">
+                            <select id="colorScheme">
+                                <option value="viridis">Viridis</option>
+                                <option value="plasma">Plasma</option>
+                                <option value="inferno">Inferno</option>
+                                <option value="magma">Magma</option>
+                                <option value="cividis">Cividis</option>
+                                <option value="rainbow">Rainbow</option>
+                                <option value="tab10">Tableau 10</option>
+                                <option value="Set3">Set 3</option>
+                                <option value="Paired">Paired</option>
+                                <option value="hsv">HSV</option>
+                            </select>
+                            <button id="randomColor" class="action-button" data-lang="zh">随机配</button>
+                            <button id="randomColor" class="action-button" data-lang="en" style="display: none;">Random Color</button>
                         </div>
+                        <div id="colorPreview" class="color-preview"></div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="fontSize" data-lang="zh">标签字号：</label>
+                        <label for="fontSize" data-lang="en" style="display: none;">Label Font Size:</label>
+                        <div class="font-size-container">
+                            <input type="range" id="fontSize" min="8" max="16" value="10" step="1">
+                            <span id="fontSizeValue">10px</span>
+                        </div>
+                        <div class="note" data-lang="zh">调整图表中标签的字体大小</div>
+                        <div class="note" data-lang="en" style="display: none;">Adjust the font size of labels in the chart</div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="labelColor" data-lang="zh">标签颜色：</label>
+                        <label for="labelColor" data-lang="en" style="display: none;">Label Color:</label>
+                        <div class="color-input-container">
+                            <input type="color" id="labelColor" value="#000000">
+                            <input type="text" id="labelColorHex" value="#000000" maxlength="7">
+                        </div>
+                        <div class="note" data-lang="zh">选择标签文字的颜色</div>
+                        <div class="note" data-lang="en" style="display: none;">Choose the color for label text</div>
                     </div>
                 </div>
             </div>
@@ -93,8 +104,10 @@
                     <table id="dataTable">
                         <thead>
                             <tr>
-                                <th data-lang="zh">标签</th>
-                                <th data-lang="en" style="display: none;">Label</th>
+                                <th data-lang="zh">父级标签</th>
+                                <th data-lang="en" style="display: none;">Parent Label</th>
+                                <th data-lang="zh">子级标签</th>
+                                <th data-lang="en" style="display: none;">Child Label</th>
                                 <th data-lang="zh">数值</th>
                                 <th data-lang="en" style="display: none;">Value</th>
                                 <th data-lang="zh">操作</th>
@@ -103,13 +116,19 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input type="text" class="label-input" data-placeholder-zh="输入标签" data-placeholder-en="Enter label" placeholder="输入标签"></td>
+                                <td><input type="text" class="parent-label-input" data-placeholder-zh="输入父级标签" data-placeholder-en="Enter parent label" placeholder="输入父级标签"></td>
+                                <td><input type="text" class="child-label-input" data-placeholder-zh="输入子级标签" data-placeholder-en="Enter child label" placeholder="输入子级标签"></td>
                                 <td><input type="number" class="value-input" data-placeholder-zh="输入数值" data-placeholder-en="Enter value" placeholder="输入数值"></td>
-                                <td><button class="delete-row" data-lang="zh">删除</button><button class="delete-row" data-lang="en" style="display: none;">Delete</button></td>
+                                <td>
+                                    <button class="delete-row" data-lang="zh">删除</button>
+                                    <button class="delete-row" data-lang="en" style="display: none;">Delete</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+                <div class="note" data-lang="zh">提示：每行数据需要填写完整的父级标签、子级标签和对应数值</div>
+                <div class="note" data-lang="en" style="display: none;">Tip: Each row requires a complete parent label, child label, and corresponding value</div>
                 <div class="button-group">
                     <button id="addRow-zh" class="action-button" data-lang="zh">添加行</button>
                     <button id="addRow-en" class="action-button" data-lang="en" style="display: none;">Add Row</button>
@@ -124,9 +143,13 @@
             <h2 data-lang="zh">4. 图表预览</h2>
             <h2 data-lang="en" style="display: none;">4. Chart Preview</h2>
             <div class="panel-content">
-                <canvas id="chartContainer"></canvas>
-                <button id="downloadChart-zh" class="action-button" disabled data-lang="zh">下载图表</button>
-                <button id="downloadChart-en" class="action-button" disabled data-lang="en" style="display: none;">Download Chart</button>
+                <div id="chartContainer"></div>
+                <div class="download-buttons">
+                    <button id="downloadSVG-zh" class="action-button" disabled data-lang="zh">下载 SVG</button>
+                    <button id="downloadSVG-en" class="action-button" disabled data-lang="en" style="display: none;">Download SVG</button>
+                    <button id="downloadPNG-zh" class="action-button" disabled data-lang="zh">下载 PNG</button>
+                    <button id="downloadPNG-en" class="action-button" disabled data-lang="en" style="display: none;">Download PNG</button>
+                </div>
             </div>
         </section>
     </div>

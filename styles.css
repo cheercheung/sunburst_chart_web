@@ -446,3 +446,126 @@ button:disabled {
         height: 70vh;
     }
 }
+
+.settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.setting-item select {
+    width: 200px;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.setting-item .note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+.color-scheme-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.color-preview {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 300px;
+}
+
+.color-sample {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-sample:hover {
+    transform: scale(1.1);
+}
+
+#randomColor {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.font-size-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#fontSize {
+    width: 150px;
+    cursor: pointer;
+}
+
+#fontSizeValue {
+    min-width: 45px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.download-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.download-buttons button {
+    flex: 1;
+    min-width: 120px;
+}
+
+
+/* 移动端适配 */
+
+@media screen and (max-width: 768px) {
+    .download-buttons {
+        flex-direction: column;
+    }
+    .download-buttons button {
+        width: 100%;
+    }
+}
+
+.color-input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#labelColor {
+    width: 50px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#labelColorHex {
+    width: 80px;
+    padding: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: monospace;
+}

@@ -4,81 +4,88 @@ import time
 import os
 import sys
 import platform
+import signal
+import psutil
 
-def start_app():
-    # 获取当前脚本的绝对路径
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # 根据系统类型选择 Python 命令
-    python_cmd = 'python3' if platform.system() in ['Darwin', 'Linux'] else 'python'
-    
-    print(f"当前工作目录: {current_dir}")
-    print(f"使用 Python 命令: {python_cmd}")
-    
+def kill_existing_server():
+    """关闭已经运行的 Flask 服务器进程"""
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        try:
+            cmdline = proc.info['cmdline']
+            if cmdline and 'python' in cmdline[0].lower() and 'app.py' in cmdline[-1]:
+                print(f"关闭已存在的服务器进程 (PID: {proc.pid})")
+                if platform.system() == 'Windows':
+                    subprocess.run(['taskkill', '/F', '/PID', str(proc.pid)], capture_output=True)
+                else:
+                    os.kill(proc.pid, signal.SIGTERM)
+                time.sleep(1)  # 等待进程完全关闭
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+
+def start_server():
     try:
-        # 检查依赖是否安装
-        print("检查依赖...")
-        subprocess.check_call([python_cmd, '-m', 'pip', 'install', '-r', 'requirements.txt'])
+        # 获取当前脚本的绝对路径
+        current_dir = os.path.dirname(os.path.abspath(__file__))
         
-        # 启动 Flask 服务器
-        print("启动服务器...")
-        flask_process = subprocess.Popen(
-            [python_cmd, 'app.py'],
-            cwd=current_dir,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True
-        )
+        # 根据系统类型选择 Python 命令
+        python_cmd = 'python3' if platform.system() in ['Darwin', 'Linux'] else 'python'
         
-        # 等待服务器启动
-        time.sleep(2)
+        print(f"当前工作目录: {current_dir}")
+        print(f"使用 Python 命令: {python_cmd}")
         
-        # 检查服务器是否成功启动
-        if flask_process.poll() is None:
-            print("服务器启动成功！")
-            # 打开浏览器
-            print("打开浏览器...")
-            webbrowser.open('http://127.0.0.1:5000')
+        try:
+            # 先关闭已存在的服务器
+            print("检查并关闭已存在的服务器...")
+            kill_existing_server()
             
-            try:
-                print("\n服务器运行中... 按 Ctrl+C 关闭服务器")
-                while True:
-                    # 检查服务器输出
-                    output = flask_process.stdout.readline()
-                    if output:
-                        print(output.strip())
-                    # 检查错误输出
-                    error = flask_process.stderr.readline()
-                    if error:
-                        print(f"错误: {error.strip()}", file=sys.stderr)
-                    # 检查服务器是否还在运行
-                    if flask_process.poll() is not None:
-                        break
-                    time.sleep(0.1)
-            except KeyboardInterrupt:
-                print("\n正在关闭服务器...")
-            finally:
-                flask_process.terminate()
-                try:
-                    flask_process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    flask_process.kill()
-                print("服务器已关闭")
-        else:
-            print("服务器启动失败！")
-            error_output = flask_process.stderr.read()
-            print(f"错误信息：\n{error_output}")
+            # 检查依赖是否安装
+            print("检查依赖...")
+            subprocess.check_call([python_cmd, '-m', 'pip', 'install', '-r', 'requirements.txt'])
             
+            # 启动服务器
+            print(f"\n启动服务器...")
+            process = subprocess.Popen([python_cmd, 'app.py'], 
+                                     stdout=subprocess.PIPE, 
+                                     stderr=subprocess.PIPE,
+                                     universal_newlines=True)
+            
+            # 等待并读取端口信息
+            for line in process.stdout:
+                print(line.strip())
+                if "服务器将在端口" in line:
+                    port = line.split()[-2]
+                    url = f"http://localhost:{port}"
+                    print(f"服务器已启动，正在打开浏览器...")
+                    webbrowser.open(url)
+                    
+                    # 保持服务器运行
+                    print("\n服务器运行中... 按 Ctrl+C 关闭服务器")
+                    try:
+                        while True:
+                            time.sleep(1)
+                    except KeyboardInterrupt:
+                        print("\n正在关闭服务器...")
+                        process.terminate()
+                    break
+                
+        except Exception as e:
+            print(f"启动服务器时出错: {str(e)}")
+            if 'process' in locals():
+                process.terminate()
+        
     except subprocess.CalledProcessError as e:
         print(f"安装依赖失败：{e}")
     except Exception as e:
         print(f"发生错误：{e}")
-        if 'flask_process' in locals():
-            flask_process.terminate()
 
 if __name__ == '__main__':
     try:
-        start_app()
+        # 添加 psutil 依赖
+        subprocess.check_call([
+            'python3' if platform.system() in ['Darwin', 'Linux'] else 'python',
+            '-m', 'pip', 'install', 'psutil'
+        ])
+        start_server()
     except Exception as e:
         print(f"程序异常退出：{e}")
         input("按回车键退出...")
