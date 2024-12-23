@@ -37,3 +37,10 @@ test_*.png
 # System
 .DS_Store
 Thumbs.db
+
+# Vercel
+.vercel
+__pycache__/
+*.pyc
+.env
+node_modules/

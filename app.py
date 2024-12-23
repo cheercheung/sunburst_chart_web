@@ -1,31 +1,23 @@
-from flask import Flask, send_file, request, jsonify
+from flask import Flask, send_file, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
-from sunburst import generate_sunburst  # 导入旭日图生成函数
-
-# 获取当前文件的绝对路径目录
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+from sunburst import generate_sunburst
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/')
-def index():
-    return send_file(os.path.join(CURRENT_DIR, 'index.html'))
+# 获取当前文件的绝对路径目录
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def serve_static(path):
-    try:
-        # 检查是否是 API 请求
-        if path.startswith('api/'):
-            return jsonify({"error": "API endpoint not found"}), 404
-            
-        file_path = os.path.join(CURRENT_DIR, path)
-        if os.path.exists(file_path):
-            return send_file(file_path)
-        return jsonify({"error": "File not found"}), 404
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+def serve(path):
+    if path == "":
+        return send_file('index.html')
+    elif os.path.exists(os.path.join(CURRENT_DIR, path)):
+        return send_file(path)
+    else:
+        return send_file('index.html')
 
 @app.route('/generate_chart', methods=['POST'])
 def generate_chart():
@@ -35,7 +27,7 @@ def generate_chart():
         print("Data:", data)
         
         if not data:
-            return jsonify({"error": "�������收到数据"}), 400
+            return jsonify({"error": "没有收到数据"}), 400
             
         # 验证数据格式
         print("\n=== 数据验证 ===")
@@ -64,7 +56,7 @@ def generate_chart():
         if len(data['values']) == 0:
             return jsonify({"error": "至少需要一组完整的数据"}), 400
             
-        # 获取字体大小和颜色参数
+        # 获取字体大小和颜色参��
         font_size = data.get('font_size', 10)
         label_color = data.get('label_color', '#000000')
         
