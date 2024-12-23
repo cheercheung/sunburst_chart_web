@@ -7,7 +7,7 @@ from sunburst import generate_sunburst  # 导入旭日图生成函数
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 
 @app.route('/')
 def index():
@@ -35,7 +35,7 @@ def generate_chart():
         print("Data:", data)
         
         if not data:
-            return jsonify({"error": "没有收到数据"}), 400
+            return jsonify({"error": "�������收到数据"}), 400
             
         # 验证数据格式
         print("\n=== 数据验证 ===")
@@ -105,4 +105,4 @@ if __name__ == '__main__':
         print(f"服务器将在端口 {port} 上运行")
         app.run(host='0.0.0.0', port=port, debug=True)
     except Exception as e:
-        print(f"启动��务器失败: {e}")
+        print(f"启动服务器失败: {e}")
