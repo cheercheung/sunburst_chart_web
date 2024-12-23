@@ -23,6 +23,12 @@ const translations = {
     }
 };
 
+// 添加 API 基础 URL 配置
+const API_BASE_URL = process.env.NODE_ENV === 'production' ?
+    'https://your-backend-url.com' // 这里需要替换为你的后端 URL
+    :
+    'http://localhost:5000';
+
 document.addEventListener('DOMContentLoaded', function() {
     // 获取DOM元素
     const dataTable = document.getElementById('dataTable');
@@ -182,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generateChart(data) {
         try {
             console.log('发送数据:', data);
-            const response = await fetch('/generate_chart', {
+            const response = await fetch(`${API_BASE_URL}/generate_chart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -212,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const svgContent = await response.text();
             if (!svgContent.includes('<svg')) {
-                console.error('无效的 SVG 内容:', svgContent);
+                console.error('无效��� SVG 内容:', svgContent);
                 throw new Error('Invalid SVG content');
             }
 
