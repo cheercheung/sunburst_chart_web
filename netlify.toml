@@ -7,8 +7,8 @@
   PYTHON_VERSION = "3.8"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/generate-chart"
+  to = "/.netlify/functions/generate-chart"
   status = 200
   force = true
 
