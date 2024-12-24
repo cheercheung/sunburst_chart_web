@@ -80,6 +80,10 @@ def start_server():
 
 if __name__ == '__main__':
     try:
+        # 检查 Python 版本
+        if sys.version_info < (3, 8):
+            print("警告: 建议使用 Python 3.8 或更高版本")
+        
         # 添加 psutil 依赖
         subprocess.check_call([
             'python3' if platform.system() in ['Darwin', 'Linux'] else 'python',
