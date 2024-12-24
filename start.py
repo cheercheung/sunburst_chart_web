@@ -81,6 +81,8 @@ def start_server():
 if __name__ == '__main__':
     try:
         # 检查 Python 版本
+        python_version = platform.python_version()
+        print(f"当前 Python 版本: {python_version}")
         if sys.version_info < (3, 8):
             print("警告: 建议使用 Python 3.8 或更高版本")
         
