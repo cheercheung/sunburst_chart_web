@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generateChart(data) {
         try {
             console.log('发送数据:', data);
-            const response = await fetch('/.netlify/functions/app', {
+            const response = await fetch('/api/generate-chart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const svgContent = await response.text();
             if (!svgContent.includes('<svg')) {
-                console.error('���效的 SVG 内容:', svgContent);
+                console.error('效的 SVG 内容:', svgContent);
                 throw new Error('Invalid SVG content');
             }
 

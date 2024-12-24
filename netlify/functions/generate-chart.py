@@ -1,10 +1,5 @@
-from flask import Flask, send_file, request, jsonify
-from flask_cors import CORS
-import os
+import json
 from sunburst import generate_sunburst
-
-app = Flask(__name__)
-CORS(app)
 
 def handler(event, context):
     try:
@@ -12,7 +7,7 @@ def handler(event, context):
         if event['httpMethod'] != 'POST':
             return {
                 'statusCode': 405,
-                'body': 'Method not allowed'
+                'body': json.dumps({'error': 'Method not allowed'})
             }
             
         # 解析请求体
@@ -37,12 +32,14 @@ def handler(event, context):
         return {
             'statusCode': 200,
             'headers': {
-                'Content-Type': 'image/svg+xml'
+                'Content-Type': 'image/svg+xml',
+                'Access-Control-Allow-Origin': '*'  # 添加 CORS 头
             },
             'body': svg_content
         }
         
     except Exception as e:
+        print(f"Error: {str(e)}")  # 添加错误日志
         return {
             'statusCode': 500,
             'body': json.dumps({'error': str(e)})
