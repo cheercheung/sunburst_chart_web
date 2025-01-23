@@ -10,40 +10,7 @@ import os
 # 设置中文字体
 def get_chinese_font():
     """获取中文字体"""
-    # macOS 可能的字体路径
-    mac_font_paths = [
-        '/System/Library/Fonts/PingFang.ttc',
-        '/System/Library/Fonts/STHeiti Light.ttc',
-        '/System/Library/Fonts/STHeiti Medium.ttc',
-        '/System/Library/Fonts/Hiragino Sans GB.ttc',
-        '/Library/Fonts/Arial Unicode.ttf',
-        # 添加更多常见字体路径
-        '/System/Library/Fonts/AppleGothic.ttf',
-        '/System/Library/Fonts/Songti.ttc'
-    ]
-    
-    # Windows 可能的字体路径
-    windows_font_paths = [
-        'C:\\Windows\\Fonts\\SimSun.ttc',
-        'C:\\Windows\\Fonts\\SimHei.ttf',
-        'C:\\Windows\\Fonts\\Microsoft YaHei.ttf',
-        'C:\\Windows\\Fonts\\msyh.ttf'
-    ]
-    
-    # Linux 可能的字体路径
-    linux_font_paths = [
-        '/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf',
-        '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'
-    ]
-    
-    # 尝试所有可能的字体路径
-    for font_path in mac_font_paths + windows_font_paths + linux_font_paths:
-        if os.path.exists(font_path):
-            print(f"使用字体: {font_path}")
-            return FontProperties(fname=font_path)
-    
-    print("警告: 未找到中文字体，使用系统默认字体")
-    return FontProperties()
+    return FontProperties(fname='https://github.com/googlefonts/noto-cjk/blob/main/NotoSansCJKsc-Regular.otf?raw=true')
 
 # 获取字体
 font = get_chinese_font()
