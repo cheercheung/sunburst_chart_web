@@ -7,7 +7,7 @@
 - 支持 2-6 层级的数据结构
 - 丰富的颜色方案选择
 - 支持标签字体大小和颜色自定义
-- 支持 SVG 和 PNG 格式导出
+- 支持 SVG 格式导出
 - 支持中英文界面切换
 - 响应式设计，支持移动端
 
@@ -28,7 +28,7 @@
 
 4. **图表预览与导出**
    - 实时预览生成的旭日图
-   - 支持导出 SVG 和 PNG 格式
+   - 支持导出 SVG 格式
 
 ## 技术栈
 
@@ -38,23 +38,41 @@
 
 ## 本地运行
 
-1. 安装依赖：
+1. 确保已安装 Python 3.12
+2. 克隆仓库：
 ```bash
-pip install flask flask-cors matplotlib numpy
+git clone https://github.com/yourusername/sunburst-chart-generator.git
+cd sunburst-chart-generator
 ```
 
-2. 运行服务器：
+3. 创建并激活虚拟环境：
 ```bash
-python app.py
+python3.12 -m venv venv
+source venv/bin/activate
 ```
 
-3. 在浏览器中访问显示的地址（默认会自动分配可用端口）
+4. 安装依赖：
+```bash
+pip install -r requirements.txt
+```
+
+5. 运行启动脚本：
+```bash
+python start.py
+```
+
+6. 在浏览器中访问显示的地址（默认会自动打开）
+
+## 部署到 Vercel
+
+1. 注册 [Vercel](https://vercel.com/) 账号并安装 Vercel CLI
+2. 克隆仓库并进入目录
+3. 运行 `vercel` 命令，按提示操作即可
 
 ## 注意事项
 
 - 确保系统安装了支持中文的字体
 - 建议使用现代浏览器（Chrome, Firefox, Safari, Edge 等）
-- PNG 导出时会自动优化为 2 倍大小以获得更好的显示效果
 
 ## 开发计划
 

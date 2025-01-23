@@ -2,6 +2,12 @@ from flask import Flask, send_file, request, jsonify
 from flask_cors import CORS
 import os
 from sunburst import generate_sunburst
+import logging
+
+# 配置日志
+logging.basicConfig(level=logging.INFO,
+                   format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)
@@ -9,32 +15,42 @@ CORS(app)
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path == "":
-        return send_file('index.html')
-    elif os.path.exists(path):
-        return send_file(path)
-    else:
-        return send_file('index.html')
+    try:
+        if path == "":
+            logger.info("访问首页")
+            return send_file('index.html')
+        elif os.path.exists(path):
+            logger.info(f"访问文件: {path}")
+            return send_file(path)
+        else:
+            logger.warning(f"文件不存在，返回首页: {path}")
+            return send_file('index.html')
+    except Exception as e:
+        logger.error(f"服务静态文件时出错: {str(e)}")
+        return jsonify({"error": "服务器内部错误"}), 500
 
 @app.route('/api/generate-chart', methods=['POST'])
 def generate_chart():
     try:
         data = request.get_json()
-        print("\n=== 接收到的数据 ===")
-        print("Data:", data)
+        logger.info("\n=== 接收到的数据 ===")
+        logger.info(f"Data: {data}")
         
         if not data:
+            logger.warning("未收到数据")
             return jsonify({"error": "未收到数据"}), 400
             
         # 验证数据格式
-        print("\n=== 数据验证 ===")
+        logger.info("\n=== 数据验证 ===")
         required_fields = ['labels_list', 'values', 'title', 'cmap']
         for field in required_fields:
             if field not in data:
+                logger.warning(f"缺少必要字段: {field}")
                 return jsonify({"error": f"缺少必要字段: {field}"}), 400
             if not data[field]:
+                logger.warning(f"字段 {field} 不能为空")
                 return jsonify({"error": f"字段 {field} 不能为空"}), 400
-            print(f"{field}: {data[field]}")
+            logger.info(f"{field}: {data[field]}")
         
         # 验证数据类型
         if not isinstance(data['values'], list):
@@ -54,7 +70,7 @@ def generate_chart():
             return jsonify({"error": "至少需要一组完整的数据"}), 400
             
         # 生成旭日图
-        print("\n=== 生成图表 ===")
+        logger.info("\n=== 生成图表 ===")
         svg_content = generate_sunburst(
             labels_list=labels_list,
             values=values,
@@ -70,9 +86,9 @@ def generate_chart():
         return svg_content, 200, {'Content-Type': 'image/svg+xml'}
         
     except Exception as e:
-        print(f"处理请求时出错: {str(e)}")
+        logger.error(f"处理请求时出错: {str(e)}")
         import traceback
-        print(traceback.format_exc())
+        logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
@@ -86,5 +102,5 @@ if __name__ == '__main__':
         return port
     
     port = find_free_port()
-    print(f"\n服务器将在端口 {port} 上启动")
+    logger.info(f"\n服务器将在端口 {port} 上启动")
     app.run(port=port)

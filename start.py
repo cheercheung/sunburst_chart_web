@@ -7,8 +7,8 @@ import platform
 import signal
 import psutil
 
-# 全局定义 python_cmd
-python_cmd = 'python3.10' if platform.system() == 'Darwin' else ('python3' if platform.system() == 'Linux' else 'python')
+# 全局定义 python_cmd - 使用虚拟环境中的 Python
+python_cmd = 'python' if os.path.exists('venv/bin/python') else '/usr/local/opt/python@3.12/bin/python3.12'
 
 def kill_existing_server():
     """关闭已经运行的 Flask 服务器进程"""
@@ -29,15 +29,32 @@ def check_dependencies():
     """检查并安装依赖"""
     try:
         print("检查依赖...")
+        pip_cmd = 'pip'
+        
+        # 先显示当前已安装的包
+        print("\n当前已安装的包：")
+        subprocess.run([pip_cmd, 'list'], check=True)
+        
+        print("\n开始安装依赖...")
         result = subprocess.run(
-            [python_cmd, '-m', 'pip', 'install', '-r', 'requirements.txt'],
+            [pip_cmd, 'install', '-r', 'requirements.txt'],
             capture_output=True,
-            text=True
+            text=True,
+            check=True  # 这会在命令失败时抛出异常
         )
-        if result.returncode != 0:
-            print("安装依赖失败，错误信息：")
-            print(result.stderr)
-            return False
+        
+        print(result.stdout)  # 显示安装输出
+        
+        # 验证关键包是否安装
+        print("\n验证依赖安装：")
+        for package in ['flask', 'flask-cors', 'matplotlib', 'numpy']:
+            try:
+                __import__(package.replace('-', '_'))
+                print(f"✓ {package} 已安装")
+            except ImportError as e:
+                print(f"✗ {package} 安装失败: {e}")
+                return False
+        
         return True
     except Exception as e:
         print(f"检查依赖时出错：{e}")
@@ -45,46 +62,62 @@ def check_dependencies():
 
 def start_server():
     try:
-        # 获取当前脚本的绝对路径
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        
         print(f"当前工作目录: {current_dir}")
         print(f"使用 Python 命令: {python_cmd}")
         
         try:
-            # 先关闭已存在的服务器
             print("检查并关闭已存在的服务器...")
             kill_existing_server()
             
-            # 检查依赖
             if not check_dependencies():
                 raise Exception("依赖安装失败")
             
-            # 启动服务器
             print(f"\n启动服务器...")
             process = subprocess.Popen([python_cmd, 'app.py'], 
                                      stdout=subprocess.PIPE, 
                                      stderr=subprocess.PIPE,
-                                     universal_newlines=True)
+                                     universal_newlines=True,
+                                     bufsize=1)  # 设置行缓冲
             
-            # 等待并读取端口信息
+            # 读取错误输出
+            def print_stderr():
+                for line in process.stderr:
+                    # 只有真正的错误才加上"错误:"前缀
+                    if "ERROR" in line or "Error" in line or "error" in line:
+                        print(f"错误: {line.strip()}")
+                    else:
+                        print(line.strip())
+            
+            import threading
+            error_thread = threading.Thread(target=print_stderr)
+            error_thread.daemon = True
+            error_thread.start()
+            
+            # 读取标准输出
+            port = None
             for line in process.stdout:
                 print(line.strip())
                 if "服务器将在端口" in line:
-                    port = line.split()[-2]
-                    url = f"http://localhost:{port}"
-                    print(f"服务器已启动，正在打开浏览器...")
-                    webbrowser.open(url)
-                    
-                    # 保持服务器运行
-                    print("\n服务器运行中... 按 Ctrl+C 关闭服务器")
                     try:
-                        while True:
-                            time.sleep(1)
-                    except KeyboardInterrupt:
-                        print("\n正在关闭服务器...")
-                        process.terminate()
-                    break
+                        port = line.split()[-2]
+                        url = f"http://localhost:{port}"
+                        print(f"服务器已启动，正在打开浏览器... {url}")
+                        time.sleep(1)  # 等待服务器完全启动
+                        webbrowser.open(url)
+                    except Exception as e:
+                        print(f"打开浏览器时出错: {e}")
+            
+            if not port:
+                raise Exception("未能获取服务器端口")
+                
+            print("\n服务器运行中... 按 Ctrl+C 关闭服务器")
+            try:
+                while True:
+                    time.sleep(1)
+            except KeyboardInterrupt:
+                print("\n正在关闭服务器...")
+                process.terminate()
                 
         except Exception as e:
             print(f"启动服务器时出错: {str(e)}")
@@ -99,17 +132,13 @@ if __name__ == '__main__':
         # 检查 Python 版本
         python_version = platform.python_version()
         print(f"当前 Python 版本: {python_version}")
-        if sys.version_info > (3, 12):
-            print("警告: Python 版本过高，建议使用 3.10-3.12 之间的版本")
-            print("请安装 Python 3.10 版本并重试")
-            sys.exit(1)
-        elif sys.version_info < (3, 10):
-            print("警告: Python 版本过低，建议使用 3.10-3.12 之间的版本")
-            print("请安装 Python 3.10 版本并重试")
+        major, minor, _ = map(int, python_version.split('.'))
+        
+        if (major, minor) != (3, 12):
+            print("警告: 请使用 Python 3.12 版本")
+            print("当前使用的不是 Python 3.12")
             sys.exit(1)
         
-        # 添加 psutil 依赖
-        subprocess.check_call([python_cmd, '-m', 'pip', 'install', 'psutil'])
         start_server()
     except Exception as e:
         print(f"程序异常退出：{e}")

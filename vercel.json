@@ -5,13 +5,18 @@
         "use": "@vercel/python",
         "config": {
             "maxLambdaSize": "15mb",
-            "runtime": "python3.8"
+            "runtime": "python3.12"
         }
     }],
     "routes": [{
-        "src": "/(.*)",
-        "dest": "app.py"
-    }],
+            "src": "/api/generate-chart",
+            "dest": "app.py"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "app.py"
+        }
+    ],
     "env": {
         "PYTHONPATH": "."
     }
