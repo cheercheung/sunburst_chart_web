@@ -2,4 +2,6 @@ __pycache__
 *.pyc
 venv
 .env
-.git 
+.git
+node_modules/
+!fonts 
