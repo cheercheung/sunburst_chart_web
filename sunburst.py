@@ -142,8 +142,21 @@ def plot_level(data_dict, start_angle, total_value, ax, level=0, max_level=None,
         
         current_angle += angle
 
-def generate_sunburst(labels_list, values, title='旭日图', cmap='viridis', font_size=10, label_color='#000000'):
-    """生成旭日图"""
+def generate_sunburst(labels_list, values, title, cmap='viridis', font_size=10, label_color='#000000'):
+    """
+    生成旭日图
+    
+    Args:
+        labels_list (list): 标签列表的列表，每个子列表代表一层
+        values (list): 数值列表
+        title (str): 图表标题
+        cmap (str): 颜色映射名称
+        font_size (int): 字体大小
+        label_color (str): 标签颜色
+        
+    Returns:
+        str: SVG 格式的图表内容，如果生成失败则返回 None
+    """
     try:
         # 数据验证
         if not labels_list or not values:
@@ -231,7 +244,7 @@ def generate_sunburst(labels_list, values, title='旭日图', cmap='viridis', fo
             return None
             
     except Exception as e:
-        print(f"错误: 处理数据时发生异常 - {str(e)}")
+        print(f"生成旭日图时出错: {str(e)}")
         import traceback
         print(traceback.format_exc())
         return None
