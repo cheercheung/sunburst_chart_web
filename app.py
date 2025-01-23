@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 from sunburst import generate_sunburst
 import logging
+from matplotlib.font_manager import FontProperties
 
 # 配置日志
 logging.basicConfig(level=logging.INFO,
@@ -90,6 +91,13 @@ def generate_chart():
         import traceback
         logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
+
+def get_chinese_font():
+    """获取中文字体"""
+    font_path = os.path.join(os.path.dirname(__file__), 'fonts', 'NotoSansCJKsc-Regular.otf')
+    if os.path.exists(font_path):
+        print(f"使用字体: {font_path}")
+        return
 
 if __name__ == '__main__':
     import socket

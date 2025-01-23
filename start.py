@@ -6,6 +6,8 @@ import sys
 import platform
 import signal
 import psutil
+import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
 
 # 全局定义 python_cmd - 使用虚拟环境中的 Python
 python_cmd = 'python' if os.path.exists('venv/bin/python') else '/usr/local/opt/python@3.12/bin/python3.12'
@@ -143,4 +145,32 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"程序异常退出：{e}")
         input("按回车键退出...")
+    
+
+def get_chinese_font():
+    """获取中文字体"""
+    font_path = os.path.join(os.path.dirname(__file__), 'fonts', 'NotoSansCJKsc-Regular.otf')
+    if os.path.exists(font_path):
+        print(f"使用字体: {font_path}")
+        return FontProperties(fname=font_path)
+    else:
+        print("警告: 未找到中文字体，使用系统默认字体")
+        return FontProperties()
+
+# 获取字体
+font = get_chinese_font()
+
+def plot_level(...):
+    # 其他代码...
+    plt.text(label_angle, label_radius, label,
+             ha='center', va='center',
+             rotation=rotation,
+             fontproperties=font,
+             fontsize=font_size,
+             color=label_color)
+
+def generate_sunburst(...):
+    # 其他代码...
+    plt.title(title, fontproperties=font, pad=20, fontsize=14, 
+             bbox=dict(facecolor='white', alpha=0.8, edgecolor='none'))
     
