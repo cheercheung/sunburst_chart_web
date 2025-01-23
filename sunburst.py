@@ -10,7 +10,13 @@ import os
 # 设置中文字体
 def get_chinese_font():
     """获取中文字体"""
-    return FontProperties(fname='https://github.com/googlefonts/noto-cjk/blob/main/NotoSansCJKsc-Regular.otf?raw=true')
+    font_path = os.path.join(os.path.dirname(__file__), 'fonts', 'NotoSansCJKsc-Regular.otf')
+    if os.path.exists(font_path):
+        print(f"使用字体: {font_path}")
+        return FontProperties(fname=font_path)
+    else:
+        print("警告: 未找到中文字体，使用系统默认字体")
+        return FontProperties()
 
 # 获取字体
 font = get_chinese_font()
