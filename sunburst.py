@@ -18,8 +18,9 @@ def get_chinese_font():
         print("警告: 未找到中文字体，使用系统默认字体")
         return FontProperties()
 
-# 获取字体
+# 设置全局字体
 font = get_chinese_font()
+plt.rcParams['font.family'] = font.get_name()
 
 def create_hierarchical_data(labels_list, values):
     """
