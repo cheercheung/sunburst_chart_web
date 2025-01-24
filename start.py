@@ -157,10 +157,11 @@ def get_chinese_font():
         print("警告: 未找到中文字体，使用系统默认字体")
         return FontProperties()
 
-# 获取字体
+# 设置全局字体
 font = get_chinese_font()
+plt.rcParams['font.family'] = font.get_name()
 
-def plot_level(...):
+def plot_level(label_angle, label_radius, label, rotation, font_size, label_color):
     # 其他代码...
     plt.text(label_angle, label_radius, label,
              ha='center', va='center',
@@ -169,7 +170,7 @@ def plot_level(...):
              fontsize=font_size,
              color=label_color)
 
-def generate_sunburst(...):
+def generate_sunburst(labels_list, values, title, cmap='viridis', font_size=10, label_color='#000000'):
     # 其他代码...
     plt.title(title, fontproperties=font, pad=20, fontsize=14, 
              bbox=dict(facecolor='white', alpha=0.8, edgecolor='none'))

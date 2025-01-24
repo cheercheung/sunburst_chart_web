@@ -104,18 +104,49 @@ document.addEventListener('DOMContentLoaded', function() {
     // 添加语言切换事件监听器
     toggleLanguageBtn.addEventListener('click', switchLanguage);
 
+    // 根据层级数量更新表格列数
+    function updateTableColumns() {
+        const levelCount = parseInt(document.getElementById('levelCount').value);
+        const headerRow = document.querySelector('#dataTable thead tr');
+        const sampleRow = document.querySelector('#dataTable tbody tr');
+
+        // 清空表头和示例行
+        headerRow.innerHTML = '';
+        sampleRow.innerHTML = '';
+
+        // 添加标签列
+        for (let i = 1; i <= levelCount; i++) {
+            headerRow.innerHTML += `
+                <th data-lang="zh">标签${i}</th>
+                <th data-lang="en" style="display: none;">Label ${i}</th>
+            `;
+            sampleRow.innerHTML += `
+                <td><input type="text" class="label-input" data-placeholder-zh="输入标签${i}" data-placeholder-en="Enter label ${i}" placeholder="输入标签${i}"></td>
+            `;
+        }
+
+        // 添加数值列和操作列
+        headerRow.innerHTML += `
+            <th data-lang="zh">数值</th>
+            <th data-lang="en" style="display: none;">Value</th>
+            <th></th>
+        `;
+        sampleRow.innerHTML += `
+            <td><input type="number" class="value-input" data-placeholder-zh="输入数值" data-placeholder-en="Enter value" placeholder="输入数值"></td>
+            <td>
+                <button class="delete-row" data-lang="zh">删除</button>
+                <button class="delete-row" data-lang="en" style="display: none;">Delete</button>
+            </td>
+        `;
+    }
+
+    // 添加层级数量选择事件监听器
+    document.getElementById('levelCount').addEventListener('change', updateTableColumns);
+
     // 添加新行函数
     function addNewRow(lang) {
         const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td><input type="text" class="parent-label-input" data-placeholder-zh="输入父级标签" data-placeholder-en="Enter parent label" placeholder="${lang === 'zh' ? '输入父级标签' : 'Enter parent label'}"></td>
-            <td><input type="text" class="child-label-input" data-placeholder-zh="输入子级标签" data-placeholder-en="Enter child label" placeholder="${lang === 'zh' ? '输入子级标签' : 'Enter child label'}"></td>
-            <td><input type="number" class="value-input" data-placeholder-zh="输入数值" data-placeholder-en="Enter value" placeholder="${lang === 'zh' ? '输入数值' : 'Enter value'}"></td>
-            <td>
-                <button class="delete-row" data-lang="zh" ${lang === 'en' ? 'style="display: none;"' : ''}>删除</button>
-                <button class="delete-row" data-lang="en" ${lang === 'zh' ? 'style="display: none;"' : ''}>Delete</button>
-            </td>
-        `;
+        newRow.innerHTML = document.querySelector('#dataTable tbody tr').innerHTML;
         dataTable.querySelector('tbody').appendChild(newRow);
     }
 
@@ -135,47 +166,40 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 收集表格数据
-    function collectData() {
-        const rows = dataTable.querySelectorAll('tbody tr');
+    function getTableData() {
+        const valueMap = {};
         const levelCount = parseInt(document.getElementById('levelCount').value);
-        const parentLabels = [];
-        const childLabels = [];
-        const values = [];
         const title = document.getElementById('chartTitle').value.trim() || translations[currentLang].chartTitle;
         const cmap = colorScheme.value;
-        const fontSize = document.getElementById('fontSize').value;
+        const fontSize = parseInt(document.getElementById('fontSize').value);
         const labelColor = document.getElementById('labelColor').value;
 
-        rows.forEach(row => {
-            const parentLabel = row.querySelector('.parent-label-input').value.trim();
-            const childLabel = row.querySelector('.child-label-input').value.trim();
+        const rows = document.querySelectorAll('#dataTable tbody tr');
+        console.log('表格行数：', rows.length);
+
+        rows.forEach((row, index) => {
+            const labels = Array.from(row.querySelectorAll('.label-input')).map(input => input.value);
             const value = parseFloat(row.querySelector('.value-input').value);
 
-            if (parentLabel && childLabel && !isNaN(value)) {
-                parentLabels.push(parentLabel);
-                childLabels.push(childLabel);
-                values.push(value);
-            }
+            console.log(`第 ${index + 1} 行 - 标签: ${labels.join('/')}, 值: ${value}`);
+
+            valueMap[labels.join('/')] = value;
         });
 
-        // 构建多层级标签
-        const labels = Array(levelCount).fill().map(() => []);
-        for (let i = 0; i < parentLabels.length; i++) {
-            const label = `${parentLabels[i]}/${childLabels[i]}`;
-            const parts = label.split('/');
+        console.log('值映射：', valueMap);
 
-            // 填充每一层的标签
-            for (let level = 0; level < levelCount; level++) {
-                if (level < parts.length) {
-                    labels[level].push(parts[level]);
-                } else {
-                    // 如果层级数量超过实际标签数量，使用最后一个标签填充
-                    labels[level].push(parts[parts.length - 1]);
-                }
-            }
+        const labels = Object.keys(valueMap).map(path => path.split('/'));
+        const values = Object.values(valueMap);
+
+        const labels_list = [];
+        for (let i = 0; i < levelCount; i++) {
+            labels_list[i] = labels.map(path => path[i]);
         }
 
-        return { labels, values, title, cmap, fontSize, labelColor };
+        console.log('标签列表：', labels);
+        console.log('值列表：', values);
+
+        return { labels_list, values, title, cmap, font_size: fontSize, label_color: labelColor };
     }
 
     // 生成图表
@@ -188,12 +212,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    labels_list: data.labels,
+                    labels_list: data.labels_list,
                     values: data.values,
                     title: data.title,
                     cmap: data.cmap,
-                    font_size: parseInt(data.fontSize),
-                    label_color: data.labelColor
+                    font_size: parseInt(data.font_size),
+                    label_color: data.label_color
                 })
             });
 
@@ -229,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 生成图表事件监听
     generateBtns.forEach(btn => {
         btn.addEventListener('click', async function() {
-            const data = collectData();
+            const data = getTableData();
             if (data.values.length === 0) {
                 alert(translations[currentLang].noDataAlert);
                 return;
@@ -418,4 +442,7 @@ document.addEventListener('DOMContentLoaded', function() {
             labelColor.value = value;
         }
     });
+
+    // 初始化表格列数
+    updateTableColumns();
 });

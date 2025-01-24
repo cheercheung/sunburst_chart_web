@@ -37,7 +37,7 @@
                     <div class="setting-item">
                         <label for="levelCount" data-lang="zh">层级数量：</label>
                         <label for="levelCount" data-lang="en" style="display: none;">Level Count:</label>
-                        <select id="levelCount">
+                        <select id="levelCount" name="levelCount">
                             <option value="2">2</option>
                             <option value="3">3</option>
                             <option value="4">4</option>
@@ -104,10 +104,18 @@
                     <table id="dataTable">
                         <thead>
                             <tr>
-                                <th data-lang="zh">父级标签</th>
-                                <th data-lang="en" style="display: none;">Parent Label</th>
-                                <th data-lang="zh">子级标签</th>
-                                <th data-lang="en" style="display: none;">Child Label</th>
+                                <th data-lang="zh">标签1</th>
+                                <th data-lang="en" style="display: none;">Label 1</th>
+                                <th data-lang="zh">标签2</th>
+                                <th data-lang="en" style="display: none;">Label 2</th>
+                                <th data-lang="zh">标签3</th>
+                                <th data-lang="en" style="display: none;">Label 3</th>
+                                <th data-lang="zh">标签4</th>
+                                <th data-lang="en" style="display: none;">Label 4</th>
+                                <th data-lang="zh">标签5</th>
+                                <th data-lang="en" style="display: none;">Label 5</th>
+                                <th data-lang="zh">标签6</th>
+                                <th data-lang="en" style="display: none;">Label 6</th>
                                 <th data-lang="zh">数值</th>
                                 <th data-lang="en" style="display: none;">Value</th>
                                 <th data-lang="zh">操作</th>
@@ -116,8 +124,12 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input type="text" class="parent-label-input" data-placeholder-zh="输入父级标签" data-placeholder-en="Enter parent label" placeholder="输入父级标签"></td>
-                                <td><input type="text" class="child-label-input" data-placeholder-zh="输入子级标签" data-placeholder-en="Enter child label" placeholder="输入子级标签"></td>
+                                <td><input type="text" class="label-input" data-placeholder-zh="输入标签1" data-placeholder-en="Enter label 1" placeholder="输入标签1"></td>
+                                <td><input type="text" class="label-input" data-placeholder-zh="输入标签2" data-placeholder-en="Enter label 2" placeholder="输入标签2"></td>
+                                <td><input type="text" class="label-input" data-placeholder-zh="输入标签3" data-placeholder-en="Enter label 3" placeholder="输入标签3"></td>
+                                <td><input type="text" class="label-input" data-placeholder-zh="输入标签4" data-placeholder-en="Enter label 4" placeholder="输入标签4"></td>
+                                <td><input type="text" class="label-input" data-placeholder-zh="输入标签5" data-placeholder-en="Enter label 5" placeholder="输入标签5"></td>
+                                <td><input type="text" class="label-input" data-placeholder-zh="输入标签6" data-placeholder-en="Enter label 6" placeholder="输入标签6"></td>
                                 <td><input type="number" class="value-input" data-placeholder-zh="输入数值" data-placeholder-en="Enter value" placeholder="输入数值"></td>
                                 <td>
                                     <button class="delete-row" data-lang="zh">删除</button>

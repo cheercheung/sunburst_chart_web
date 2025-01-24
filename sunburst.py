@@ -161,13 +161,14 @@ def generate_sunburst(labels_list, values, title, cmap='viridis', font_size=10, 
             print(f"错误: 数值转换失败 - {str(e)}")
             return None
             
-        # 验证数据长度一致性
-        if not all(len(level) == len(values) for level in labels_list):
-            print("错误: 数据长度不一致")
-            print(f"标签长度: {[len(level) for level in labels_list]}")
-            print(f"数值长度: {len(values)}")
-            return None
-
+        # 验证每一层标签的长度与值列表的长度是否一致
+        for i, labels in enumerate(labels_list):
+            if len(labels) != len(values):
+                print(f"错误: 标签列表的第 {i+1} 层长度与值列表的长度不一致")
+                print(f"第 {i+1} 层标签长度: {len(labels)}")
+                print(f"值列表长度: {len(values)}")
+                return None
+        
         # 清除之前的图表
         plt.clf()
         plt.close('all')
